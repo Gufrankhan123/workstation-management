@@ -1,177 +1,380 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Owner Registration - Workstation Management</title>
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-  <style>
-    body {
-      background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
-      min-height: 100vh;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 1rem;
-    }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register - Workstation Management</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #4a90e2;
+            --secondary-color: #2c3e50;
+        }
 
-    .register-container {
-      background-color: #fff;
-      border-radius: 1rem;
-      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
-      padding: 2.5rem;
-      width: 100%;
-      max-width: 480px;
-    }
+        body {
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 1rem;
+        }
 
-    h1 {
-      color: #2c3e50;
-      font-weight: 600;
-    }
+        .register-container {
+            background-color: white;
+            border-radius: 20px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+            padding: 3rem;
+            width: 100%;
+            max-width: 500px;
+            position: relative;
+            overflow: hidden;
+        }
 
-    .tagline {
-      color: #7f8c8d;
-      font-size: 0.95rem;
-      margin-bottom: 1.5rem;
-    }
+        .register-container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 5px;
+            background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
+        }
 
-    .form-label {
-      font-weight: 500;
-    }
+        .register-header {
+            text-align: center;
+            margin-bottom: 2rem;
+            position: relative;
+        }
 
-    .form-control::placeholder {
-      color: #b0b8c1;
-    }
+        .home-button {
+            position: absolute;
+            top: -20px;
+            left: 0;
+            color: var(--primary-color);
+            text-decoration: none;
+            font-size: 1.2rem;
+            transition: all 0.3s ease;
+        }
 
-    .btn-link {
-      padding: 0;
-      font-size: 0.9rem;
-    }
+        .home-button:hover {
+            color: var(--secondary-color);
+            transform: translateX(-5px);
+        }
 
-    .alert {
-      display: none;
-      margin-top: 1rem;
-    }
+        .register-header h1 {
+            color: var(--secondary-color);
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
 
-    .spinner-border {
-      display: none;
-      width: 1rem;
-      height: 1rem;
-      margin-right: 0.5rem;
-    }
-  </style>
+        .register-header p {
+            color: #6c757d;
+            font-size: 0.95rem;
+        }
+
+        .form-floating {
+            margin-bottom: 1.5rem;
+            position: relative;
+        }
+
+        .form-floating > .form-control {
+            padding: 1rem 0.75rem;
+            height: calc(3.5rem + 2px);
+            line-height: 1.25;
+        }
+
+        .form-floating > label {
+            padding: 1rem 0.75rem;
+        }
+
+        .password-toggle {
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            cursor: pointer;
+            color: #6c757d;
+            z-index: 10;
+        }
+
+        .password-toggle:hover {
+            color: var(--primary-color);
+        }
+
+        .btn-register {
+            background-color: var(--primary-color);
+            border: none;
+            padding: 0.8rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .btn-register:disabled {
+            background-color: #ccc;
+            cursor: not-allowed;
+        }
+
+        .loader {
+            display: none;
+            width: 20px;
+            height: 20px;
+            border: 3px solid #ffffff;
+            border-radius: 50%;
+            border-top: 3px solid transparent;
+            animation: spin 1s linear infinite;
+            position: absolute;
+            right: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+        }
+
+        @keyframes spin {
+            0% { transform: translateY(-50%) rotate(0deg); }
+            100% { transform: translateY(-50%) rotate(360deg); }
+        }
+
+        .register-footer {
+            text-align: center;
+            margin-top: 2rem;
+        }
+
+        .register-footer a {
+            color: var(--primary-color);
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s ease;
+        }
+
+        .register-footer a:hover {
+            color: var(--secondary-color);
+        }
+
+        .alert {
+            border-radius: 10px;
+            margin-bottom: 1.5rem;
+        }
+
+        /* Password strength indicators - these will be purely visual now, no JS logic */
+        .password-requirements {
+            font-size: 0.85rem;
+            color: #6c757d;
+            margin-top: 0.5rem;
+        }
+
+        .password-requirements ul {
+            list-style: none;
+            padding-left: 0;
+            margin-bottom: 0;
+        }
+
+        .password-requirements li {
+            margin-bottom: 0.25rem;
+        }
+
+        .password-requirements li i {
+            margin-right: 0.5rem;
+            font-size: 0.75rem;
+        }
+        /* No dynamic classes for met/unmet in purely HTML/CSS */
+        .password-strength-bar {
+            /* This bar will remain static without JS */
+            height: 5px;
+            margin-top: 0.5rem;
+            border-radius: 5px;
+            background-color: #e9ecef;
+            overflow: hidden;
+        }
+        .password-strength-bar div { /* Inner bar to show static progress if any */
+            width: 0%; /* Default to 0, or add static width if desired for visual */
+            height: 100%;
+            background-color: #ccc; /* Static color */
+        }
+    </style>
 </head>
 <body>
-  <div class="register-container">
-    <h1 class="text-center">Owner Registration</h1>
-    <p class="tagline text-center">Register your owner account for Workstation Management</p>
+    <div class="register-container">
+        <div class="register-header">
+            <a href="/" class="home-button">
+                <i class="fas fa-home"></i>
+            </a>
+            <h1>Create Account</h1>
+            <p>Register as an owner to manage workstations</p>
+        </div>
 
-    <div class="alert alert-success" role="alert" id="successAlert">
-      Registration successful! Redirecting to login...
+        <div th:if="${errorMessage}" class="alert alert-danger" role="alert">
+            <i class="fas fa-exclamation-circle me-2"></i>
+            <span th:text="${errorMessage}"></span>
+        </div>
+        <div th:if="${successMessage}" class="alert alert-success" role="alert">
+            <i class="fas fa-check-circle me-2"></i>
+            <span th:text="${successMessage}"></span>
+        </div>
+        <div th:if="${#fields.hasErrors('user.*')}" class="alert alert-danger" role="alert">
+            <i class="fas fa-exclamation-triangle me-2"></i>
+            Registration failed due to validation errors:
+            <ul>
+                <li th:each="err : ${#fields.errors('user.*')}" th:text="${err}"></li>
+            </ul>
+        </div>
+
+
+        <form th:action="@{/api/users/register}" th:object="${user}" method="post" id="registerForm" onsubmit="return validateForm()">
+            <div class="form-floating">
+                <input type="text" autocomplete="off" class="form-control" id="ownerUsername" th:field="*{username}" placeholder="Username" required>
+                <label for="ownerUsername">Username</label>
+                <p th:if="${#fields.hasErrors('username')}" th:errors="*{username}" class="text-danger"></p>
+            </div>
+
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-floating">
+                        <input type="password" class="form-control" id="ownerPassword" th:field="*{password}" placeholder="Password" required oninput="validatePassword()">
+                        <label for="ownerPassword">Password</label>
+                        <i class="fas fa-eye-slash password-toggle" onclick="togglePassword('ownerPassword')"></i>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-floating">
+                        <input type="password" class="form-control" id="confirmPassword" name="confirmPassword" placeholder="Confirm Password" required oninput="validatePassword()">
+                        <label for="confirmPassword">Confirm Password</label>
+                        <i class="fas fa-eye-slash password-toggle" onclick="togglePassword('confirmPassword')"></i>
+                        <p id="passwordMismatch" class="text-danger" style="display: none;">Passwords do not match.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="password-requirements" id="passwordRequirements">
+                <ul>
+                    <li id="lengthReq"><i class="fas fa-times text-danger"></i> At least 8 characters</li>
+                    <li id="upperReq"><i class="fas fa-times text-danger"></i> One uppercase letter</li>
+                    <li id="lowerReq"><i class="fas fa-times text-danger"></i> One lowercase letter</li>
+                    <li id="numberReq"><i class="fas fa-times text-danger"></i> One number</li>
+                    <li id="specialReq"><i class="fas fa-times text-danger"></i> One special character</li>
+                </ul>
+            </div>
+            <p th:if="${#fields.hasErrors('password')}" th:errors="*{password}" class="text-danger"></p>
+
+            <button type="submit" class="btn btn-primary btn-register w-100" id="registerButton">
+                Create Account
+                <div class="loader" id="registerLoader"></div>
+            </button>
+
+            <div class="register-footer">
+                <p>Already have an account? <a th:href="@{/login}">Login here</a></p>
+            </div>
+        </form>
     </div>
-    <div class="alert alert-danger" role="alert" id="errorAlert"></div>
 
-    <form id="registerForm" onsubmit="return handleSubmit(event)">
-      <div class="mb-3">
-        <label for="ownerUsername" class="form-label">Username</label>
-        <input type="text" class="form-control" id="ownerUsername" name="username" required placeholder="Choose a unique username">
-      </div>
-
-      <div class="mb-3">
-        <label for="ownerPassword" class="form-label">Password</label>
-        <input type="password" class="form-control" id="ownerPassword" name="password" required placeholder="Create a strong password">
-      </div>
-
-      <div class="mb-3">
-        <label for="confirmPassword" class="form-label">Confirm Password</label>
-        <input type="password" class="form-control" id="confirmPassword" required placeholder="Re-enter your password">
-      </div>
-
-      <button type="submit" class="btn btn-primary w-100 mt-2" id="submitBtn">
-        <span class="spinner-border" role="status" aria-hidden="true" id="submitSpinner"></span>
-        Register
-      </button>
-
-      <div class="text-center mt-3">
-        <a href="/login" class="btn btn-link text-decoration-none">Already have an account? Login here</a>
-      </div>
-    </form>
-  </div>
-
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-  <script>
-    function handleSubmit(event) {
-      event.preventDefault();
-      
-      const username = document.getElementById('ownerUsername').value;
-      const password = document.getElementById('ownerPassword').value;
-      const confirmPassword = document.getElementById('confirmPassword').value;
-      
-      if (password !== confirmPassword) {
-        showError('Passwords do not match');
-        return false;
-      }
-
-      // Show loading state
-      const submitBtn = document.getElementById('submitBtn');
-      const submitSpinner = document.getElementById('submitSpinner');
-      submitBtn.disabled = true;
-      submitSpinner.style.display = 'inline-block';
-
-      // Hide any existing alerts
-      document.getElementById('successAlert').style.display = 'none';
-      document.getElementById('errorAlert').style.display = 'none';
-
-      // Send registration request
-      fetch('/api/users/register', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          username: username,
-          password: password
-        })
-      })
-      .then(response => {
-        if (!response.ok) {
-          return response.json().then(data => {
-            throw new Error(data.message || 'Registration failed');
-          });
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        function togglePassword(inputId) {
+            const passwordInput = document.getElementById(inputId);
+            const icon = passwordInput.nextElementSibling.nextElementSibling;
+            
+            if (passwordInput.type === 'password') {
+                passwordInput.type = 'text';
+                icon.classList.remove('fa-eye-slash');
+                icon.classList.add('fa-eye');
+            } else {
+                passwordInput.type = 'password';
+                icon.classList.remove('fa-eye');
+                icon.classList.add('fa-eye-slash');
+            }
         }
-        return response.json();
-      })
-      .then(data => {
-        if (data.success) {
-          showSuccess();
-          setTimeout(() => {
-            window.location.href = '/login';
-          }, 2000);
-        } else {
-          showError(data.message || 'Registration failed');
+
+        function validatePassword() {
+            const password = document.getElementById('ownerPassword').value;
+            const confirmPassword = document.getElementById('confirmPassword').value;
+            const passwordMismatch = document.getElementById('passwordMismatch');
+            const registerButton = document.getElementById('registerButton');
+            let validCount = 0;
+
+            // Check password match
+            if (confirmPassword && password !== confirmPassword) {
+                passwordMismatch.style.display = 'block';
+                registerButton.disabled = true;
+            } else {
+                passwordMismatch.style.display = 'none';
+            }
+
+            // Requirements
+            const lengthReq = document.getElementById('lengthReq');
+            const upperReq = document.getElementById('upperReq');
+            const lowerReq = document.getElementById('lowerReq');
+            const numberReq = document.getElementById('numberReq');
+            const specialReq = document.getElementById('specialReq');
+            const requirements = document.getElementById('passwordRequirements');
+
+            // Check each requirement
+            if (password.length >= 8) {
+                lengthReq.innerHTML = '<i class="fas fa-check text-success"></i> At least 8 characters';
+                validCount++;
+            } else {
+                lengthReq.innerHTML = '<i class="fas fa-times text-danger"></i> At least 8 characters';
+            }
+            if (/[A-Z]/.test(password)) {
+                upperReq.innerHTML = '<i class="fas fa-check text-success"></i> One uppercase letter';
+                validCount++;
+            } else {
+                upperReq.innerHTML = '<i class="fas fa-times text-danger"></i> One uppercase letter';
+            }
+            if (/[a-z]/.test(password)) {
+                lowerReq.innerHTML = '<i class="fas fa-check text-success"></i> One lowercase letter';
+                validCount++;
+            } else {
+                lowerReq.innerHTML = '<i class="fas fa-times text-danger"></i> One lowercase letter';
+            }
+            if (/[0-9]/.test(password)) {
+                numberReq.innerHTML = '<i class="fas fa-check text-success"></i> One number';
+                validCount++;
+            } else {
+                numberReq.innerHTML = '<i class="fas fa-times text-danger"></i> One number';
+            }
+            if (/[^A-Za-z0-9]/.test(password)) {
+                specialReq.innerHTML = '<i class="fas fa-check text-success"></i> One special character';
+                validCount++;
+            } else {
+                specialReq.innerHTML = '<i class="fas fa-times text-danger"></i> One special character';
+            }
+
+            // Enable/disable register button based on validation
+            if (validCount === 5 && password === confirmPassword) {
+                registerButton.disabled = false;
+            } else {
+                registerButton.disabled = true;
+            }
+
+            // Hide requirements if all are met
+            if (validCount === 5) {
+                requirements.style.display = 'none';
+            } else {
+                requirements.style.display = 'block';
+            }
         }
-      })
-      .catch(error => {
-        showError(error.message || 'An error occurred during registration');
-      })
-      .finally(() => {
-        submitBtn.disabled = false;
-        submitSpinner.style.display = 'none';
-      });
 
-      return false;
-    }
+        function validateForm() {
+            const password = document.getElementById('ownerPassword').value;
+            const confirmPassword = document.getElementById('confirmPassword').value;
+            
+            if (password !== confirmPassword) {
+                alert('Passwords do not match!');
+                return false;
+            }
 
-    function showError(message) {
-      const errorAlert = document.getElementById('errorAlert');
-      errorAlert.textContent = message;
-      errorAlert.style.display = 'block';
-    }
-
-    function showSuccess() {
-      const successAlert = document.getElementById('successAlert');
-      successAlert.style.display = 'block';
-    }
-  </script>
+            // Show loader
+            const loader = document.getElementById('registerLoader');
+            const button = document.getElementById('registerButton');
+            loader.style.display = 'block';
+            button.disabled = true;
+            
+            return true;
+        }
+    </script>
 </body>
 </html>

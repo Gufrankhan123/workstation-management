@@ -1,79 +1,296 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Login - Workstation Management</title>
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-  <style>
-    body {
-      background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
-      min-height: 100vh;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 1rem;
-    }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - Workstation Management</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #4a90e2;
+            --secondary-color: #2c3e50;
+            --info-color: #17a2b8;
+        }
 
-    .login-container {
-      background-color: #fff;
-      border-radius: 1rem;
-      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
-      padding: 2.5rem;
-      width: 100%;
-      max-width: 480px;
-    }
+        body {
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 1rem;
+        }
 
-    h1 {
-      color: #2c3e50;
-      font-weight: 600;
-    }
+        .login-container {
+            background-color: white;
+            border-radius: 20px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+            padding: 3rem;
+            width: 100%;
+            max-width: 450px;
+            position: relative;
+            overflow: hidden;
+        }
 
-    .tagline {
-      color: #7f8c8d;
-      font-size: 0.95rem;
-      margin-bottom: 1.5rem;
-    }
+        .login-container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 5px;
+            background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
+        }
 
-    .form-label {
-      font-weight: 500;
-    }
+        .login-header {
+            text-align: center;
+            margin-bottom: 2rem;
+            position: relative;
+        }
 
-    .form-control::placeholder {
-      color: #b0b8c1;
-    }
+        .home-button {
+            position: absolute;
+            top: -20px;
+            left: 0;
+            color: var(--primary-color);
+            text-decoration: none;
+            font-size: 1.2rem;
+            transition: all 0.3s ease;
+        }
 
-    .btn-link {
-      padding: 0;
-      font-size: 0.9rem;
-    }
-  </style>
+        .home-button:hover {
+            color: var(--secondary-color);
+            transform: translateX(-5px);
+        }
+
+        .login-header h1 {
+            color: var(--secondary-color);
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+        .login-header p {
+            color: #6c757d;
+            font-size: 0.95rem;
+        }
+
+        .form-floating {
+            margin-bottom: 1.5rem;
+            position: relative;
+        }
+
+        .form-floating > .form-control {
+            padding: 1rem 0.75rem;
+            height: calc(3.5rem + 2px);
+            line-height: 1.25;
+        }
+
+        .form-floating > label {
+            padding: 1rem 0.75rem;
+        }
+
+        .password-toggle {
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            cursor: pointer;
+            color: #6c757d;
+            z-index: 10;
+        }
+
+        .password-toggle:hover {
+            color: var(--primary-color);
+        }
+
+        .btn-login {
+            background-color: var(--primary-color);
+            border: none;
+            padding: 0.8rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .btn-login:disabled {
+            background-color: #ccc;
+            cursor: not-allowed;
+        }
+
+        .loader {
+            display: none;
+            width: 20px;
+            height: 20px;
+            border: 3px solid #ffffff;
+            border-radius: 50%;
+            border-top: 3px solid transparent;
+            animation: spin 1s linear infinite;
+            position: absolute;
+            right: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+        }
+
+        @keyframes spin {
+            0% { transform: translateY(-50%) rotate(0deg); }
+            100% { transform: translateY(-50%) rotate(360deg); }
+        }
+        
+        .btn-outline-info {
+            color: var(--info-color);
+            border-color: var(--info-color);
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+        .btn-outline-info:hover {
+            background-color: var(--info-color);
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+        .login-footer {
+            text-align: center;
+            margin-top: 2rem;
+        }
+
+        .login-footer a {
+            color: var(--primary-color);
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s ease;
+        }
+
+        .login-footer a:hover {
+            color: var(--secondary-color);
+        }
+
+        .social-login {
+            margin-top: 2rem;
+            text-align: center;
+        }
+
+        .social-login p {
+            color: #6c757d;
+            margin-bottom: 1rem;
+        }
+
+        .social-icons {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+        }
+
+        .social-icons a {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: #f8f9fa;
+            color: var(--secondary-color);
+            transition: all 0.3s ease;
+        }
+
+        .social-icons a:hover {
+            background-color: var(--primary-color);
+            color: white;
+            transform: translateY(-2px);
+        }
+        .alert {
+            border-radius: 10px;
+            margin-bottom: 1.5rem;
+        }
+    </style>
 </head>
 <body>
-  <div class="login-container">
-    <h1 class="text-center">Workstation Management</h1>
-    <p class="tagline text-center">Login to access your workstation details</p>
+    <div class="login-container">
+        <div class="login-header">
+            <a href="/" class="home-button">
+                <i class="fas fa-home"></i>
+            </a>
+            <h1>Welcome Back </h1>
+            <p>Login to access your workstation details</p>
+        </div>
 
-    <form>
-      <div class="mb-3">
-        <label for="username" class="form-label">Username</label>
-        <input type="text" class="form-control" id="username" placeholder="Enter your username">
-      </div>
+        <div th:if="${param.error}" class="alert alert-danger" role="alert">
+            <i class="fas fa-exclamation-circle me-2"></i>
+            Invalid Username or Password.
+        </div>
+        <div th:if="${param.logout}" class="alert alert-success" role="alert">
+            <i class="fas fa-check-circle me-2"></i>
+            You have been logged out successfully.
+        </div>
+        <div th:if="${param.registered}" class="alert alert-success" role="alert">
+            <i class="fas fa-check-circle me-2"></i>
+            Registration successful! Please login.
+        </div>
 
-      <div class="mb-3">
-        <label for="password" class="form-label">Password</label>
-        <input type="password" class="form-control" id="password" placeholder="Enter your password">
-      </div>
+        <form th:action="@{/api/users/login}" method="post" id="loginForm" onsubmit="return validateLoginForm()">
+            <div class="form-floating">
+                <input type="text" class="form-control" autocomplete="off" id="username" name="username" placeholder="Username" required>
+                <label for="username">Username</label>
+            </div>
 
-      <button type="submit" class="btn btn-primary w-100 mt-2">Login</button>
+            <div class="form-floating">
+                <input type="password" class="form-control" id="password" name="password" placeholder="Password" required>
+                <label for="password">Password</label>
+                <i class="fas fa-eye-slash password-toggle" onclick="togglePassword('password')"></i>
+            </div>
 
-      <div class="d-flex justify-content-between align-items-center mt-3">
-        <a href="#" class="btn btn-link text-decoration-none">Forgot Password?</a>
-        <a href="/register" class="btn btn-link text-decoration-none">Create New Account</a>
-      </div>
-    </form>
-  </div>
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <a href="#" class="text-decoration-none">Forgot Password?</a>
+            </div>
 
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+            <button type="submit" class="btn btn-primary btn-login w-100" id="loginButton">
+                Login
+                <div class="loader" id="loginLoader"></div>
+            </button>
+
+            <div class="login-footer">
+                <p>Don't have an account? <a th:href="@{/register}" class="text-decoration-none">Register here</a></p>
+            </div>
+        </form>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        function togglePassword(inputId) {
+            const passwordInput = document.getElementById(inputId);
+            const icon = passwordInput.nextElementSibling.nextElementSibling;
+            
+            if (passwordInput.type === 'password') {
+                passwordInput.type = 'text';
+                icon.classList.remove('fa-eye-slash');
+                icon.classList.add('fa-eye');
+            } else {
+                passwordInput.type = 'password';
+                icon.classList.remove('fa-eye');
+                icon.classList.add('fa-eye-slash');
+            }
+        }
+
+        function validateLoginForm() {
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+            
+            if (!username || !password) {
+                alert('Please fill in all fields');
+                return false;
+            }
+
+            // Show loader
+            const loader = document.getElementById('loginLoader');
+            const button = document.getElementById('loginButton');
+            loader.style.display = 'block';
+            button.disabled = true;
+            
+            return true;
+        }
+    </script>
 </body>
 </html>
