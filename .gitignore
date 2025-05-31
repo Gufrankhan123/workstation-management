@@ -1,0 +1,126 @@
+HELP.md
+target/
+.mvn/wrapper/maven-wrapper.jar
+!**/src/main/**/target/
+!**/src/test/**/target/
+
+### STS ###
+.apt_generated
+.classpath
+.factorypath
+.project
+.settings
+.springBeans
+.sts4-cache
+
+### IntelliJ IDEA ###
+.idea
+*.iws
+*.iml
+*.ipr
+
+### NetBeans ###
+/nbproject/private/
+/nbbuild/
+/dist/
+/nbdist/
+/.nb-gradle/
+build/
+!**/src/main/**/build/
+!**/src/test/**/build/
+
+### VS Code ###
+.vscode/
+
+# OS generated files
+.DS_Store
+Thumbs.db
+Desktop.ini
+
+# Logs and temp files
+*.log
+*.tmp
+*.swp
+*.swo
+*.bak
+*.old
+*.orig
+
+# Archives
+*.zip
+*.tar.gz
+*.rar
+*.7z
+*.tar
+*.gz
+*.tgz
+*.xz
+
+# Node.js dependencies
+node_modules/
+
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+.Python
+
+# Environment files
+.env
+.env.*
+
+# JetBrains Rider
+.idea/
+*.sln.iml
+
+# Eclipse
+*.launch
+.settings/
+.metadata/
+bin/
+
+# VS Code
+.history/
+
+# Mac/Linux
+*.swp
+*~
+
+# Misc
+*.class
+*.jar
+*.war
+*.ear
+
+# Ignore coverage reports
+coverage/
+*.lcov
+
+# Ignore test output
+junit-report.xml
+
+# Ignore npm debug log
+npm-debug.log*
+
+# Ignore yarn
+.yarn/
+.pnp.*
+
+# Ignore package-lock
+package-lock.json
+yarn.lock
+
+# Ignore build tools
+out/
+dist/
+
+# Ignore database files
+*.sqlite
+*.db
+*.db3
+*.sdb
+*.sqlite3
+
+# Ignore IDE workspace files
+*.code-workspace

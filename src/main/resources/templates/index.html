@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Workstation Management</title>
+
+    <!-- Bootstrap 5 CSS -->
+    <link href="/webjars/bootstrap/5.3.3/css/bootstrap.min.css" rel="stylesheet">
+
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #f0f4f8 0%, #d9e2ec 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 1rem;
+        }
+
+        .card {
+            border: none;
+            border-radius: 1rem;
+            box-shadow: 0 0 30px rgba(0, 0, 0, 0.05);
+        }
+
+        .card-title {
+            color: #2c3e50;
+        }
+
+        .card-text, .list-group-item {
+            color: #5d6d7e;
+        }
+
+        .btn-group-custom .btn {
+            min-width: 150px;
+        }
+
+        @media (max-width: 576px) {
+            .btn-group-custom {
+                flex-direction: column;
+                gap: 0.75rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="card p-4 p-md-5">
+        <div class="text-center mb-4">
+            <h1 class="card-title">Workstation Management System</h1>
+            <p class="card-text">Welcome to the Workstation Management System for MS Technologies employees.</p>
+            <p class="text-muted">This system helps manage employee details and workstations efficiently.</p>
+        </div>
+
+        <div>
+            <h4 class="mb-3">Employee Management System Overview</h4>
+            <ul class="list-group list-group-flush mb-3">
+                <li class="list-group-item">Distributed application to manage employee details.</li>
+                <li class="list-group-item">Maintains personal and official information.</li>
+                <li class="list-group-item">Simple and intuitive even for non-technical users.</li>
+                <li class="list-group-item">User-friendly and efficient.</li>
+            </ul>
+            <p class="card-text">Our system offers a reliable and efficient approach to managing employee information.</p>
+        </div>
+
+        <div class="d-flex justify-content-center btn-group-custom mt-4 gap-3">
+            <a href="/login" class="btn btn-primary">Login</a>
+            <a href="/register" class="btn btn-outline-secondary">Register (Owner)</a>
+        </div>
+    </div>
+</div>
+
+<!-- Bootstrap JS -->
+<script src="/webjars/bootstrap/5.3.3/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
