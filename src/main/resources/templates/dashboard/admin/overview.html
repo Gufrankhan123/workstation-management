@@ -1,0 +1,39 @@
+<div th:fragment="content" data-page="overview">
+    <div class="welcome-card">
+        <div class="user-info">
+            <div class="user-avatar">
+                <i class="fas fa-user"></i>
+            </div>
+            <div>
+                <h2>Welcome, <span th:text="${session.user.username}">Admin</span>!</h2>
+                <p class="text-muted">Here's an overview of your admin dashboard.</p>
+            </div>
+        </div>
+    </div>
+    <div class="row mt-4">
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title"><i class="fas fa-users"></i> Employees</h5>
+                    <p class="card-text">Manage all employees here.</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title"><i class="fas fa-user-tie"></i> Clients</h5>
+                    <p class="card-text">Manage all clients here.</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title"><i class="fas fa-briefcase"></i> Projects</h5>
+                    <p class="card-text">Manage all projects here.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div> 

@@ -23,7 +23,7 @@ public class User {
     private String password;
     
     @Column(nullable = false)
-    private String role = "employee";
+    private String role = "ADMIN";
     
     @Column(name = "created_at")
     private java.time.LocalDateTime createdAt;

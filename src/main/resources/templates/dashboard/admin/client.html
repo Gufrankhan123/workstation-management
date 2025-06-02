@@ -1,0 +1,31 @@
+<div th:fragment="content" data-page="client">
+    <div class="container mt-4">
+        <h2>Client Management</h2>
+        <p>Here you can view, add, edit, or remove clients.</p>
+        
+        <!-- Add Client Button -->
+        <button class="btn btn-primary mb-3">
+            <i class="fas fa-user-plus"></i> Add Client
+        </button>
+
+        <!-- Client Table -->
+        <div class="table-responsive">
+            <table class="table table-bordered table-hover">
+                <thead class="table-light">
+                    <tr>
+                        <th>Client ID</th>
+                        <th>Name</th>
+                        <th>Email</th>
+                        <th>Company</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:if="${clients == null or #lists.isEmpty(clients)}">
+                        <td colspan="5" class="text-center">No clients found.</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div> 

@@ -18,22 +18,60 @@
             min-height: 100vh;
         }
 
+        html, body {
+            height: 100%;
+            margin: 0;
+            padding: 0;
+            overflow-x: hidden;
+        }
+        .container-fluid, .row {
+            height: 100vh;
+            margin: 0;
+            padding: 0;
+        }
         .sidebar {
+            width: 240px;
+            min-width: 180px;
+            max-width: 240px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            height: 100vh;
+            background: linear-gradient(180deg, #4a90e2, #2c3e50);
+            padding: 1.5rem 1rem 1.5rem 1rem;
+            color: white;
             position: fixed;
             top: 0;
             left: 0;
-            height: 100vh;
-            width: var(--sidebar-width);
-            background: linear-gradient(180deg, var(--primary-color), var(--secondary-color));
-            padding: 1.5rem;
-            color: white;
+            transition: transform 0.3s ease;
+            z-index: 1050;
+            overflow-y: auto;
         }
-
+        .sidebar-hidden {
+            transform: translateX(-100%);
+        }
         .main-content {
-            margin-left: var(--sidebar-width);
-            padding: 2rem;
+            margin-left: 100px;
+            margin-right: 30px;
+            padding: 2rem 2rem 2rem 1rem;
+            min-height: 100vh;
+            height: 100vh;
+            overflow-y: auto;
+            box-sizing: border-box;
         }
-
+        .hamburger {
+            display: none;
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            z-index: 1100;
+            background: #4a90e2;
+            border: none;
+            color: white;
+            font-size: 2rem;
+            border-radius: 5px;
+            padding: 0.3rem 0.7rem;
+        }
         .welcome-card {
             background: white;
             border-radius: 15px;
@@ -89,63 +127,242 @@
             left: 1.5rem;
             right: 1.5rem;
         }
+
+        .btn-primary {
+            background-color: #4a90e2;
+            border: none;
+        }
+
+        .btn-primary:hover {
+            background-color: #357ab8;
+        }
+
+        @media (max-width: 768px) {
+            .sidebar {
+                width: 200px;
+                min-width: 200px;
+                max-width: 200px;
+                padding: 1rem 0.5rem;
+                transform: translateX(-100%);
+                height: 100vh;
+            }
+            .sidebar.sidebar-visible {
+                transform: translateX(0);
+            }
+            .main-content {
+                margin-left: 0;
+                padding: 1rem 1rem 1rem 0.5rem;
+                min-height: 100vh;
+                height: 100vh;
+            }
+            .hamburger {
+                display: block;
+            }
+            html, body {
+                overflow-x: hidden;
+            }
+        }
+
+        .content-container {
+            padding: 20px;
+        }
+        .admin-content {
+            display: none;
+        }
+        .admin-content.active {
+            display: block;
+        }
     </style>
 </head>
 <body>
-    <div class="sidebar">
-        <h3 class="mb-4">Dashboard</h3>
-        <nav class="nav flex-column">
-            <a class="nav-link active" href="#"><i class="fas fa-home"></i> Home</a>
-            <a class="nav-link" href="#"><i class="fas fa-user"></i> Profile</a>
-            <a class="nav-link" href="#"><i class="fas fa-cog"></i> Settings</a>
-            <a class="nav-link" href="#"><i class="fas fa-chart-bar"></i> Analytics</a>
-        </nav>
-        <a href="/api/users/logout" class="btn btn-outline-light w-100 logout-btn" id="logoutBtn">
-            <i class="fas fa-sign-out-alt"></i> Logout
-        </a>
-    </div>
-
-    <div class="main-content">
-        <div class="welcome-card">
-            <div class="user-info">
-                <div class="user-avatar">
-                    <i class="fas fa-user"></i>
-                </div>
+    <!-- Hamburger button for small screens -->
+    <button class="btn btn-primary d-md-none m-2" type="button" data-bs-toggle="offcanvas" data-bs-target="#sidebarMenu" aria-controls="sidebarMenu">
+        <i class="fas fa-bars"></i>
+    </button>
+    <div class="container-fluid g-0">
+        <div class="row g-0">
+            <!-- Sidebar as Bootstrap Offcanvas for mobile, visible as column on desktop -->
+            <div class="col-md-2 d-none d-md-block p-0 bg-transparent">
                 <div>
-                    <h2>Welcome, <span th:text="${session.user.username}">User</span>!</h2>
-                    <p class="text-muted">Here's what's happening with your workstation today.</p>
+                    <div class="sidebar d-flex flex-column justify-content-between" style="height: 100vh;">
+                        <div th:switch="${session.user.role}">
+                            <!-- Admin Navigation -->
+                            <div th:case="'ADMIN'">
+                                <h3 class="mb-4">Admin Dashboard</h3>
+                                <nav class="nav flex-column">
+                                    <a class="nav-link" th:classappend="${page == 'overview'} ? 'active' : ''"
+                                       th:href="@{/dashboard/admin/overview}">
+                                        <i class="fas fa-tachometer-alt"></i> Overview
+                                    </a>
+                                    <a class="nav-link" th:classappend="${page == 'employee'} ? 'active' : ''"
+                                       th:href="@{/dashboard/admin/employee}">
+                                        <i class="fas fa-users"></i> Employee
+                                    </a>
+                                    <a class="nav-link" th:classappend="${page == 'client'} ? 'active' : ''"
+                                       th:href="@{/dashboard/admin/client}">
+                                        <i class="fas fa-user-tie"></i> Client
+                                    </a>
+                                    <a class="nav-link" th:classappend="${page == 'project'} ? 'active' : ''"
+                                       th:href="@{/dashboard/admin/project}">
+                                        <i class="fas fa-briefcase"></i> Project
+                                    </a>
+                                </nav>
+                            </div>
+                            
+                            <!-- Employee Navigation -->
+                            <div th:case="'EMPLOYEE'">
+                                <h3 class="mb-4">Employee Dashboard</h3>
+                                <nav class="nav flex-column">
+                                    <a class="nav-link" th:classappend="${page == 'employee-overview'} ? 'active' : ''"
+                                       th:href="@{/dashboard/employee/overview}">
+                                        <i class="fas fa-tachometer-alt"></i> Overview
+                                    </a>
+                                    <a class="nav-link" th:classappend="${page == 'employee-tasks'} ? 'active' : ''"
+                                       th:href="@{/dashboard/employee/tasks}">
+                                        <i class="fas fa-tasks"></i> Tasks
+                                    </a>
+                                </nav>
+                            </div>
+                            
+                            <!-- Client Navigation -->
+                            <div th:case="'CLIENT'">
+                                <h3 class="mb-4">Client Dashboard</h3>
+                                <nav class="nav flex-column">
+                                    <a class="nav-link" th:classappend="${page == 'client-overview'} ? 'active' : ''"
+                                       th:href="@{/dashboard/client/overview}">
+                                        <i class="fas fa-tachometer-alt"></i> Overview
+                                    </a>
+                                    <a class="nav-link" th:classappend="${page == 'client-projects'} ? 'active' : ''"
+                                       th:href="@{/dashboard/client/projects}">
+                                        <i class="fas fa-briefcase"></i> Projects
+                                    </a>
+                                </nav>
+                            </div>
+                        </div>
+                        
+                        <!-- Logout Button -->
+                        <div class="mb-3">
+                            <a href="/api/users/logout" class="btn btn-primary w-100" id="logoutBtn">
+                                <i class="fas fa-sign-out-alt"></i> Logout
+                            </a>
+                        </div>
+                    </div>
                 </div>
             </div>
-        </div>
+            <div class="offcanvas offcanvas-start d-md-none" tabindex="-1" id="sidebarMenu" aria-labelledby="sidebarMenuLabel">
+                <div class="offcanvas-header">
+                    <h5 class="offcanvas-title" id="sidebarMenuLabel">Menu</h5>
+                    <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+                </div>
+                <div class="offcanvas-body p-0">
+                    <div th:switch="${session.user.role}">
+                        <div th:case="'ADMIN'">
+                            <h3 class="mb-4">Admin Dashboard</h3>
+                            <nav class="nav flex-column">
+                                <a class="nav-link" th:classappend="${page == 'overview'} ? 'active' : ''" 
+                                   th:href="@{/dashboard/admin/overview}" 
+                                   data-page="overview">
+                                    <i class="fas fa-tachometer-alt"></i> Overview
+                                </a>
+                                <a class="nav-link" th:classappend="${page == 'employee'} ? 'active' : ''" 
+                                   th:href="@{/dashboard/admin/employee}" 
+                                   data-page="employee">
+                                    <i class="fas fa-users"></i> Employee
+                                </a>
+                                <a class="nav-link" th:classappend="${page == 'client'} ? 'active' : ''" 
+                                   th:href="@{/dashboard/admin/client}" 
+                                   data-page="client">
+                                    <i class="fas fa-user-tie"></i> Client
+                                </a>
+                                <a class="nav-link" th:classappend="${page == 'project'} ? 'active' : ''" 
+                                   th:href="@{/dashboard/admin/project}" 
+                                   data-page="project">
+                                    <i class="fas fa-briefcase"></i> Project
+                                </a>
+                            </nav>
+                        </div>
+                        <div th:case="'CLIENT'">
+                            <h3 class="mb-4">Client Dashboard</h3>
+                            <nav class="nav flex-column">
+                                <a class="nav-link" th:href="@{/dashboard/client/overview}" id="clientOverviewBtn"><i class="fas fa-tachometer-alt"></i> Overview</a>
+                                <a class="nav-link" th:href="@{/dashboard/client/project}" id="clientProjectBtn"><i class="fas fa-briefcase"></i> Projects</a>
+                            </nav>
+                        </div>
+                        <div th:case="'EMPLOYEE'">
+                            <h3 class="mb-4">Employee Dashboard</h3>
+                            <nav class="nav flex-column">
+                                <a class="nav-link" th:classappend="${page == 'employee-overview'} ? 'active' : ''" 
+                                   th:href="@{/dashboard/employee/overview}" 
+                                   data-page="employee-overview">
+                                    <i class="fas fa-tachometer-alt"></i> Overview
+                                </a>
+                                <a class="nav-link" th:classappend="${page == 'employee-tasks'} ? 'active' : ''" 
+                                   th:href="@{/dashboard/employee/tasks}" 
+                                   data-page="employee-tasks">
+                                    <i class="fas fa-tasks"></i> Tasks
+                                </a>
+                            </nav>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <a href="/api/users/logout" class="btn btn-primary w-100" id="logoutBtn">
+                            <i class="fas fa-sign-out-alt"></i> Logout
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <!-- Main content area -->
+            <div class="col-md-10 col-12 p-0">
+                <div class="main-content" id="mainContent">
+                    <!-- Show welcome message if no page is selected -->
+                    <div th:if="${page == null}" class="alert alert-info mt-4">
+                        Welcome to your dashboard. Please select an option from the menu.
+                    </div>
 
-        <div class="row">
-            <div class="col-md-4">
-                <div class="card">
-                    <div class="card-body">
-                        <h5 class="card-title"><i class="fas fa-desktop"></i> Workstation Status</h5>
-                        <p class="card-text">Your workstation is currently active and running smoothly.</p>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-4">
-                <div class="card">
-                    <div class="card-body">
-                        <h5 class="card-title"><i class="fas fa-tasks"></i> Recent Activities</h5>
-                        <p class="card-text">No recent activities to display.</p>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-4">
-                <div class="card">
-                    <div class="card-body">
-                        <h5 class="card-title"><i class="fas fa-bell"></i> Notifications</h5>
-                        <p class="card-text">You have no new notifications.</p>
-                    </div>
+                    <!-- Admin Views - Only show the selected page -->
+                    <th:block th:if="${session.user != null and session.user.role == 'ADMIN'}">
+                        <th:block th:switch="${page}">
+                            <div th:case="'overview'" th:insert="~{dashboard/admin/overview :: content}"></div>
+                            <div th:case="'employee'" th:insert="~{dashboard/admin/employee :: content}"></div>
+                            <div th:case="'client'" th:insert="~{dashboard/admin/client :: content}"></div>
+                            <div th:case="'project'" th:insert="~{dashboard/admin/project :: content}"></div>
+                        </th:block>
+                    </th:block>
+
+                    <!-- Employee Views -->
+                    <th:block th:if="${session.user != null and session.user.role == 'EMPLOYEE'}">
+                        <th:block th:switch="${page}">
+                            <div th:case="'employee-overview'" th:insert="~{dashboard/employee/overview :: content}"></div>
+                        </th:block>
+                    </th:block>
+
+                    <!-- Client Views -->
+                    <th:block th:if="${session.user != null and session.user.role == 'CLIENT'}">
+                        <th:block th:switch="${page}">
+                            <div th:case="'client-overview'" th:insert="~{dashboard/client/overview :: content}"></div>
+                        </th:block>
+                    </th:block>
                 </div>
             </div>
         </div>
     </div>
-
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Get current page from server-side
+            const currentPage = '[[${page}]]';
+            
+            // Update active state of sidebar links
+            const sidebarLinks = document.querySelectorAll('.nav-link');
+            sidebarLinks.forEach(link => {
+                const linkPage = link.getAttribute('data-page');
+                if (linkPage === currentPage) {
+                    link.classList.add('active');
+                } else {
+                    link.classList.remove('active');
+                }
+            });
+        });
+    </script>
 </body>
 </html> 

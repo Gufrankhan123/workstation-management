@@ -1,0 +1,32 @@
+<div th:fragment="content" data-page="project">
+    <div class="container mt-4">
+        <h2>Project Management</h2>
+        <p>Here you can view, add, edit, or remove projects.</p>
+        
+        <!-- Add Project Button -->
+        <button class="btn btn-primary mb-3">
+            <i class="fas fa-plus"></i> Add Project
+        </button>
+
+        <!-- Project Table -->
+        <div class="table-responsive">
+            <table class="table table-bordered table-hover">
+                <thead class="table-light">
+                    <tr>
+                        <th>Project ID</th>
+                        <th>Name</th>
+                        <th>Client</th>
+                        <th>Start Date</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:if="${projects == null or #lists.isEmpty(projects)}">
+                        <td colspan="6" class="text-center">No projects found.</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div> 
