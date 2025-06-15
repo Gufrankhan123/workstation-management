@@ -24,8 +24,12 @@
             padding: 0;
             overflow-x: hidden;
         }
-        .container-fluid, .row {
-            height: 100vh;
+        .container-fluid {
+            min-height: 100vh;
+            margin: 0;
+            padding: 0;
+        }
+        .row {
             margin: 0;
             padding: 0;
         }
@@ -55,8 +59,6 @@
             margin-right: 30px;
             padding: 2rem 2rem 2rem 1rem;
             min-height: 100vh;
-            height: 100vh;
-            overflow-y: auto;
             box-sizing: border-box;
         }
         .hamburger {
@@ -206,6 +208,10 @@
                                        th:href="@{/dashboard/admin/project}">
                                         <i class="fas fa-briefcase"></i> Project
                                     </a>
+                                    <a class="nav-link" th:classappend="${page == 'banned-users'} ? 'active' : ''"
+                                       th:href="@{/dashboard/admin/banned-users}">
+                                        <i class="fas fa-user-lock"></i> Banned Users
+                                    </a>
                                 </nav>
                             </div>
                             
@@ -216,10 +222,14 @@
                                     <a class="nav-link" th:classappend="${page == 'employee-overview'} ? 'active' : ''"
                                        th:href="@{/dashboard/employee/overview}">
                                         <i class="fas fa-tachometer-alt"></i> Overview
+                                 
+                                    <a class="nav-link" th:classappend="${page == 'employee-profile'} ? 'active' : ''"
+                                       th:href="@{/dashboard/employee/profile}">
+                                        <i class="fas fa-user"></i> Profile
                                     </a>
-                                    <a class="nav-link" th:classappend="${page == 'employee-tasks'} ? 'active' : ''"
-                                       th:href="@{/dashboard/employee/tasks}">
-                                        <i class="fas fa-tasks"></i> Tasks
+                                    <a class="nav-link" th:classappend="${page == 'employee-project'} ? 'active' : ''"
+                                       th:href="@{/dashboard/employee/project}">
+                                        <i class="fas fa-briefcase"></i> Project
                                     </a>
                                 </nav>
                             </div>
@@ -231,6 +241,10 @@
                                     <a class="nav-link" th:classappend="${page == 'client-overview'} ? 'active' : ''"
                                        th:href="@{/dashboard/client/overview}">
                                         <i class="fas fa-tachometer-alt"></i> Overview
+                                    </a>
+                                    <a class="nav-link" th:classappend="${page == 'client-profile'} ? 'active' : ''"
+                                       th:href="@{/dashboard/client/profile}">
+                                        <i class="fas fa-user"></i> Profile
                                     </a>
                                     <a class="nav-link" th:classappend="${page == 'client-projects'} ? 'active' : ''"
                                        th:href="@{/dashboard/client/projects}">
@@ -279,13 +293,22 @@
                                    data-page="project">
                                     <i class="fas fa-briefcase"></i> Project
                                 </a>
+                                <a class="nav-link" th:classappend="${page == 'banned-users'} ? 'active' : ''" 
+                                   th:href="@{/dashboard/admin/banned-users}" 
+                                   data-page="banned-users">
+                                    <i class="fas fa-user-lock"></i> Banned Users
+                                </a>
                             </nav>
                         </div>
                         <div th:case="'CLIENT'">
                             <h3 class="mb-4">Client Dashboard</h3>
                             <nav class="nav flex-column">
-                                <a class="nav-link" th:href="@{/dashboard/client/overview}" id="clientOverviewBtn"><i class="fas fa-tachometer-alt"></i> Overview</a>
-                                <a class="nav-link" th:href="@{/dashboard/client/project}" id="clientProjectBtn"><i class="fas fa-briefcase"></i> Projects</a>
+                                <a class="nav-link" th:classappend="${page == 'client-overview'} ? 'active' : ''"
+                                   th:href="@{/dashboard/client/overview}" id="clientOverviewBtn"><i class="fas fa-tachometer-alt"></i> Overview</a>
+                                <a class="nav-link" th:classappend="${page == 'client-profile'} ? 'active' : ''"
+                                   th:href="@{/dashboard/client/profile}" data-page="client-profile"><i class="fas fa-user"></i> Profile</a>
+                                <a class="nav-link" th:classappend="${page == 'client-projects'} ? 'active' : ''"
+                                   th:href="@{/dashboard/client/projects}" data-page="client-projects"><i class="fas fa-briefcase"></i> Projects</a>
                             </nav>
                         </div>
                         <div th:case="'EMPLOYEE'">
@@ -300,6 +323,16 @@
                                    th:href="@{/dashboard/employee/tasks}" 
                                    data-page="employee-tasks">
                                     <i class="fas fa-tasks"></i> Tasks
+                                </a>
+                                <a class="nav-link" th:classappend="${page == 'employee-profile'} ? 'active' : ''" 
+                                   th:href="@{/dashboard/employee/profile}" 
+                                   data-page="employee-profile">
+                                    <i class="fas fa-user"></i> Profile
+                                </a>
+                                <a class="nav-link" th:classappend="${page == 'employee-project'} ? 'active' : ''" 
+                                   th:href="@{/dashboard/employee/project}" 
+                                   data-page="employee-project">
+                                    <i class="fas fa-briefcase"></i> Project
                                 </a>
                             </nav>
                         </div>
@@ -326,6 +359,7 @@
                             <div th:case="'employee'" th:insert="~{dashboard/admin/employee :: content}"></div>
                             <div th:case="'client'" th:insert="~{dashboard/admin/client :: content}"></div>
                             <div th:case="'project'" th:insert="~{dashboard/admin/project :: content}"></div>
+                            <div th:case="'banned-users'" th:insert="~{dashboard/admin/banned-users :: content}"></div>
                         </th:block>
                     </th:block>
 
@@ -333,6 +367,8 @@
                     <th:block th:if="${session.user != null and session.user.role == 'EMPLOYEE'}">
                         <th:block th:switch="${page}">
                             <div th:case="'employee-overview'" th:insert="~{dashboard/employee/overview :: content}"></div>
+                            <div th:case="'employee-profile'" th:insert="~{dashboard/employee/profile :: content}"></div>
+                            <div th:case="'employee-project'" th:insert="~{dashboard/employee/project :: content}"></div>
                         </th:block>
                     </th:block>
 
@@ -340,6 +376,8 @@
                     <th:block th:if="${session.user != null and session.user.role == 'CLIENT'}">
                         <th:block th:switch="${page}">
                             <div th:case="'client-overview'" th:insert="~{dashboard/client/overview :: content}"></div>
+                            <div th:case="'client-profile'" th:insert="~{dashboard/client/profile :: content}"></div>
+                            <div th:case="'client-projects'" th:insert="~{dashboard/client/projects :: content}"></div>
                         </th:block>
                     </th:block>
                 </div>

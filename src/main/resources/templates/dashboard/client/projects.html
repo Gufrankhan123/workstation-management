@@ -1,0 +1,47 @@
+<div th:fragment="content" data-page="client-projects">
+    <div class="container py-3">
+        <h2 class="mb-4" th:text="'My Projects (' + ${client.companyName} + ')'">My Projects (Acme Corp)</h2>
+
+        <div th:if="${client.projects == null or #lists.isEmpty(client.projects)}">
+            <div class="alert alert-info">You currently have no projects.</div>
+        </div>
+
+        <div class="row g-4" th:each="project : ${client.projects}">
+            <div class="col-12 col-lg-6">
+                <div class="card shadow-sm">
+                    <div class="card-body">
+                        <h4 class="card-title mb-3" th:text="${project.name}">Project Name</h4>
+                        <ul class="list-group list-group-flush mb-3">
+                            <li class="list-group-item px-0 d-flex justify-content-between"><span class="text-muted">Start Date</span><span th:text="${#temporals.format(project.startDate,'yyyy-MM-dd')}">2025-01-01</span></li>
+                            <li class="list-group-item px-0 d-flex justify-content-between"><span class="text-muted">End Date</span><span th:text="${#temporals.format(project.endDate,'yyyy-MM-dd')}">2025-12-31</span></li>
+                        </ul>
+                        <div class="accordion" th:id="'empAcc_' + ${project.projectId}">
+                            <div class="accordion-item">
+                                <h2 class="accordion-header" th:id="'heading_' + ${project.projectId}">
+                                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" th:data-bs-target="'#collapse_' + ${project.projectId}" aria-expanded="false" th:aria-controls="'collapse_' + ${project.projectId}">
+                                        Employees Working on this Project
+                                    </button>
+                                </h2>
+                                <div class="accordion-collapse collapse" th:id="'collapse_' + ${project.projectId}" th:aria-labelledby="'heading_' + ${project.projectId}" th:data-bs-parent="'#empAcc_' + ${project.projectId}">
+                                    <div class="accordion-body p-0">
+                                        <div th:if="${#lists.isEmpty(project.employees)}" class="p-3 text-muted">This project is not assigned to any employees yet.</div>
+                                        <div th:unless="${#lists.isEmpty(project.employees)}">
+                                            <ul class="list-group list-group-flush">
+                                                <li class="list-group-item" th:each="emp : ${project.employees}">
+                                                    <div class="fw-bold" th:text="${emp.name}">Employee Name</div>
+                                                    <small class="text-muted d-block">Email: <span th:text="${emp.user.username}">email@example.com</span></small>
+                                                    <small class="text-muted d-block">Department: <span th:text="${emp.dept}">IT</span></small>
+                                                    <small class="text-muted d-block">Joining Date: <span th:text="${#temporals.format(emp.joiningDate, 'yyyy-MM-dd')}">2025-01-01</span></small>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div> 

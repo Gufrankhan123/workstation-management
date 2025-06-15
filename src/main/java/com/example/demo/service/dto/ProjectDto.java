@@ -7,7 +7,7 @@ public class ProjectDto {
     private String name;
     private LocalDate startDate;
     private LocalDate endDate;
-    private Integer clientId; // id of Client entity
+    private java.util.Set<Integer> clientIds; // ids of Client entities (now supports multiple)
     private Set<Integer> employeeIds; // ids of Employee entities (optional for now)
 
     public ProjectDto() {}
@@ -19,8 +19,8 @@ public class ProjectDto {
     public void setStartDate(LocalDate startDate) { this.startDate = startDate; }
     public LocalDate getEndDate() { return endDate; }
     public void setEndDate(LocalDate endDate) { this.endDate = endDate; }
-    public Integer getClientId() { return clientId; }
-    public void setClientId(Integer clientId) { this.clientId = clientId; }
+    public java.util.Set<Integer> getClientIds() { return clientIds; }
+    public void setClientIds(java.util.Set<Integer> clientIds) { this.clientIds = clientIds; }
     public Set<Integer> getEmployeeIds() { return employeeIds; }
     public void setEmployeeIds(Set<Integer> employeeIds) { this.employeeIds = employeeIds; }
 } 

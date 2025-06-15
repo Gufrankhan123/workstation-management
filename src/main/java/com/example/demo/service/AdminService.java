@@ -18,4 +18,23 @@ public interface AdminService {
     Project getProjectByProjectId(String projectId);
     String updateProject(String projectId, ProjectDto dto);
     void deleteProject(String projectId);
+    Employee getEmployeeByEmpId(String empId);
+    Employee getEmployeeByEmail(String email);
+    List<Employee> getEmployeesByJoiningDateRange(java.time.LocalDate start, java.time.LocalDate end);
+    String updateEmployee(String empId, EmployeeDto dto);
+    void deleteEmployee(String empId);
+    String assignEmployeeToProject(String empId, String projectId);
+    String releaseEmployeeFromProject(String empId);
+    List<Employee> getBenchEmployees();
+    org.springframework.data.domain.Page<Employee> getEmployeePage(org.springframework.data.domain.Pageable pageable);
+
+    // Client operations
+    Client getClientByClientId(String clientId);
+    String updateClient(String clientId, ClientDto dto);
+    void deleteClient(String clientId);
+    Client getClientByEmail(String email);
+
+    // Project helpers
+    List<Employee> getEmployeesByProjectId(String projectId);
+    Client getClientOfProject(String projectId);
 } 

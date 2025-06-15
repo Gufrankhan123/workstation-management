@@ -25,9 +25,13 @@ public class Project {
     @Column(name = "end_date")
     private LocalDate endDate;
 
-    @ManyToOne
-    @JoinColumn(name = "client_id", nullable = false)
-    private Client client;
+    @ManyToMany
+    @JoinTable(
+            name = "project_client",
+            joinColumns = @JoinColumn(name = "project_id"),
+            inverseJoinColumns = @JoinColumn(name = "client_id")
+    )
+    private java.util.Set<Client> clients = new java.util.HashSet<>();
 
     @ManyToMany
     @JoinTable(
@@ -39,12 +43,11 @@ public class Project {
 
     public Project() {}
 
-    public Project(String projectId, String name, LocalDate startDate, LocalDate endDate, Client client) {
+    public Project(String projectId, String name, LocalDate startDate, LocalDate endDate) {
         this.projectId = projectId;
         this.name = name;
         this.startDate = startDate;
         this.endDate = endDate;
-        this.client = client;
     }
 
     // Getters and setters
@@ -58,8 +61,8 @@ public class Project {
     public void setStartDate(LocalDate startDate) { this.startDate = startDate; }
     public LocalDate getEndDate() { return endDate; }
     public void setEndDate(LocalDate endDate) { this.endDate = endDate; }
-    public Client getClient() { return client; }
-    public void setClient(Client client) { this.client = client; }
+    public java.util.Set<Client> getClients() { return clients; }
+    public void setClients(java.util.Set<Client> clients) { this.clients = clients; }
     public Set<Employee> getEmployees() { return employees; }
     public void setEmployees(Set<Employee> employees) { this.employees = employees; }
 } 

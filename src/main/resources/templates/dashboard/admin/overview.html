@@ -10,30 +10,52 @@
             </div>
         </div>
     </div>
-    <div class="row mt-4">
-        <div class="col-md-4">
+    <div class="row  mt-4">
+        <div class="col-md-3">
             <div class="card">
                 <div class="card-body">
                     <h5 class="card-title"><i class="fas fa-users"></i> Employees</h5>
-                    <p class="card-text">Manage all employees here.</p>
+                    <h2 th:text="${employeeCount}"></h2>
+                    <p class="card-text">Total employees</p>
                 </div>
             </div>
         </div>
-        <div class="col-md-4">
+        <div class="col-md-3">
             <div class="card">
                 <div class="card-body">
                     <h5 class="card-title"><i class="fas fa-user-tie"></i> Clients</h5>
-                    <p class="card-text">Manage all clients here.</p>
+                    <h2 th:text="${clientCount}"></h2>
+                    <p class="card-text">Total clients</p>
                 </div>
             </div>
         </div>
-        <div class="col-md-4">
+        <div class="col-md-3">
             <div class="card">
                 <div class="card-body">
                     <h5 class="card-title"><i class="fas fa-briefcase"></i> Projects</h5>
-                    <p class="card-text">Manage all projects here.</p>
+                    <h2 th:text="${projectCount}"></h2>
+                    <p class="card-text">Total projects</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card bg-warning text-white">
+                <div class="card-body">
+                    <h5 class="card-title"><i class="fas fa-user-clock"></i> Bench Employees</h5>
+                    <h2 th:text="${benchCount}"></h2>
+                    <p class="card-text">Currently not assigned any project</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card bg-danger text-white">
+                <div class="card-body">
+                    <h5 class="card-title"><i class="fas fa-user-lock"></i> Banned Users</h5>
+                    <h2 th:text="${bannedCount}"></h2>
+                    <p class="card-text">Accounts currently banned</p>
                 </div>
             </div>
         </div>
     </div>
+  
 </div> 
