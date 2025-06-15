@@ -145,4 +145,62 @@ public class HomeController {
         model.addAttribute("page", "client-overview");
         return "dashboard";
     }
+
+    @GetMapping("/dashboard/employee/profile")
+    public String employeeProfile(HttpSession session, Model model) {
+        User user = (User) session.getAttribute("user");
+        if (user == null || !"EMPLOYEE".equalsIgnoreCase(user.getRole())) {
+            return "redirect:/dashboard";
+        }
+        model.addAttribute("page", "employee-profile");
+        com.example.demo.model.Employee emp = adminService.getEmployeeByEmail(user.getUsername());
+        model.addAttribute("employee", emp);
+        return "dashboard";
+    }
+
+    @GetMapping("/dashboard/employee/project")
+    public String employeeProject(HttpSession session, Model model) {
+        User user = (User) session.getAttribute("user");
+        if (user == null || !"EMPLOYEE".equalsIgnoreCase(user.getRole())) {
+            return "redirect:/dashboard";
+        }
+        model.addAttribute("page", "employee-project");
+        com.example.demo.model.Employee emp = adminService.getEmployeeByEmail(user.getUsername());
+        model.addAttribute("employee", emp);
+        com.example.demo.model.Project project = null;
+        com.example.demo.model.Client client = null;
+        if (emp != null && emp.getProjects() != null && !emp.getProjects().isEmpty()) {
+            project = emp.getProjects().iterator().next();
+            if (project.getClients() != null && !project.getClients().isEmpty()) {
+                client = project.getClients().iterator().next();
+            }
+        }
+        model.addAttribute("project", project);
+        model.addAttribute("client", client);
+        return "dashboard";
+    }
+
+    @GetMapping("/dashboard/client/profile")
+    public String clientProfile(HttpSession session, Model model) {
+        User user = (User) session.getAttribute("user");
+        if (user == null || !"CLIENT".equalsIgnoreCase(user.getRole())) {
+            return "redirect:/dashboard";
+        }
+        model.addAttribute("page", "client-profile");
+        com.example.demo.model.Client client = adminService.getClientByEmail(user.getUsername());
+        model.addAttribute("client", client);
+        return "dashboard";
+    }
+
+    @GetMapping("/dashboard/client/projects")
+    public String clientProjects(HttpSession session, Model model) {
+        User user = (User) session.getAttribute("user");
+        if (user == null || !"CLIENT".equalsIgnoreCase(user.getRole())) {
+            return "redirect:/dashboard";
+        }
+        model.addAttribute("page", "client-projects");
+        com.example.demo.model.Client client = adminService.getClientByEmail(user.getUsername());
+        model.addAttribute("client", client);
+        return "dashboard";
+    }
 } 

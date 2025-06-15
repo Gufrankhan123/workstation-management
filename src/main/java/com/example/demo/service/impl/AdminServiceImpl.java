@@ -280,6 +280,11 @@ public class AdminServiceImpl implements AdminService {
         return null;
     }
 
+    @Override
+    public Client getClientByEmail(String email) {
+        return clientRepository.findByUser_Username(email);
+    }
+
     private String generateNextEmpId() {
         String lastEmpId = employeeRepository.findLastEmpId();
         int nextId = 1;

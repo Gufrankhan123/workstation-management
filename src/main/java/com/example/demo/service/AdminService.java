@@ -32,6 +32,7 @@ public interface AdminService {
     Client getClientByClientId(String clientId);
     String updateClient(String clientId, ClientDto dto);
     void deleteClient(String clientId);
+    Client getClientByEmail(String email);
 
     // Project helpers
     List<Employee> getEmployeesByProjectId(String projectId);
