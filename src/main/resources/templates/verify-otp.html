@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Verify OTP</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body class="d-flex align-items-center justify-content-center" style="min-height:100vh; background:#f8f9fa;">
+<div class="card shadow-sm p-4" style="max-width:400px; width:100%;">
+    <h4 class="mb-3 text-center">OTP Verification</h4>
+    <p class="text-muted text-center">We have sent a 6-digit code to <strong th:text="${email}">your email</strong>.</p>
+
+    <div th:if="${errorMessage}" class="alert alert-danger" th:text="${errorMessage}"></div>
+    <div th:if="${infoMessage}" class="alert alert-info" th:text="${infoMessage}"></div>
+
+    <form th:action="@{/verify-otp}" method="post">
+        <div class="mb-3">
+            <label for="code" class="form-label">Enter OTP</label>
+            <input required maxlength="6" minlength="6" type="text" class="form-control text-center" id="code" name="code" pattern="[0-9]{6}" placeholder="------" inputmode="numeric" autocomplete="off">
+        </div>
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <span id="timer" class="badge bg-secondary">00:30</span>
+            <button id="resendBtn" type="submit" formaction="/resend-otp" formmethod="post" formnovalidate class="btn btn-link p-0" disabled>Resend OTP</button>
+        </div>
+        <button id="verifyBtn" type="submit" class="btn btn-primary w-100 d-flex justify-content-center align-items-center">
+            <span>Verify</span>
+            <span id="spinner" class="spinner-border spinner-border-sm ms-2 d-none" role="status" aria-hidden="true"></span>
+        </button>
+    </form>
+</div>
+
+<script th:inline="javascript">
+let remaining = 30;
+const timerEl = document.getElementById("timer");
+const resendBtn = document.getElementById("resendBtn");
+const verifyBtn = document.getElementById("verifyBtn");
+const spinner = document.getElementById("spinner");
+
+// determine if page has error message from backend
+const hasError = /*[[${errorMessage != null}]]*/ false;
+
+function expireTimer() {
+    resendBtn.disabled = false;
+    timerEl.classList.remove('bg-secondary');
+    timerEl.classList.add('bg-danger');
+    timerEl.textContent = 'Expired';
+}
+
+if (!hasError) {
+    const interval = setInterval(() => {
+        remaining--;
+        const ss = String(remaining % 60).padStart(2, '0');
+        const mm = String(Math.floor(remaining / 60)).padStart(2, '0');
+        timerEl.textContent = `${mm}:${ss}`;
+        if (remaining <= 0) {
+            clearInterval(interval);
+            expireTimer();
+        }
+    }, 1000);
+} else {
+    // invalid OTP - stop timer immediately
+    expireTimer();
+}
+
+// disable verify button on submit and show spinner
+document.querySelector('form').addEventListener('submit', function(event) {
+    if (event.submitter === resendBtn) {
+        resendBtn.disabled = true;
+        resendBtn.textContent = 'Resending…';
+    } else {
+        verifyBtn.disabled = true;
+        spinner.classList.remove('d-none');
+    }
+});
+</script>
+</body>
+</html> 

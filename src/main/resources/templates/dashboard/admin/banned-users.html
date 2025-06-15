@@ -1,0 +1,58 @@
+<div th:fragment="content" data-page="banned-users">
+    <h2 class="mb-4">Banned Users</h2>
+
+    <div th:if="${bannedUsers.size()} == 0" class="alert alert-info">No users are currently banned.</div>
+
+    <table th:if="${bannedUsers.size()} > 0" class="table table-bordered table-hover">
+        <thead class="table-dark">
+        <tr>
+            <th>ID</th>
+            <th>Username</th>
+            <th>Role</th>
+            <th>Ban Time</th>
+            <th>Actions</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="u : ${bannedUsers}">
+            <td th:text="${u.id}"></td>
+            <td th:text="${u.username}"></td>
+            <td th:text="${u.role}"></td>
+            <td th:text="${#temporals.format(u.banTime, 'yyyy-MM-dd HH:mm')}"></td>
+            <td>
+                <form th:action="@{/admin/unban-user}" method="post" class="d-inline">
+                    <input type="hidden" name="userId" th:value="${u.id}"/>
+                    <button class="btn btn-success btn-sm" onclick="return confirm('Unban this user?');">Unban</button>
+                </form>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+
+    <hr/>
+    <h3 class="mt-4">Ban a User</h3>
+    <p class="text-muted">Select an active user to ban:</p>
+    <table class="table table-striped">
+        <thead>
+        <tr>
+            <th>ID</th>
+            <th>Username</th>
+            <th>Role</th>
+            <th>Actions</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="u : ${activeUsers}">
+            <td th:text="${u.id}"></td>
+            <td th:text="${u.username}"></td>
+            <td th:text="${u.role}"></td>
+            <td>
+                <form th:action="@{/admin/ban-user}" method="post" class="d-inline">
+                    <input type="hidden" name="userId" th:value="${u.id}"/>
+                    <button class="btn btn-danger btn-sm" onclick="return confirm('Ban this user?');">Ban</button>
+                </form>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</div> 

@@ -10,6 +10,7 @@ import com.example.demo.service.UserService;
 import java.util.List;
 import com.example.demo.service.AdminService;
 import com.example.demo.service.dto.EmployeeDto;
+import com.example.demo.repository.UserRepository;
 
 @Controller
 public class HomeController {
@@ -19,6 +20,9 @@ public class HomeController {
 
     @Autowired
     private AdminService adminService;
+
+    @Autowired
+    private UserRepository userRepository;
 
     @GetMapping("/")
     public String home(HttpSession session) {
@@ -85,6 +89,7 @@ public class HomeController {
         model.addAttribute("clientCount", adminService.getAllClients().size());
         model.addAttribute("projectCount", adminService.getAllProjects().size());
         model.addAttribute("benchCount", adminService.getBenchEmployees().size());
+        model.addAttribute("bannedCount", userRepository.findByAccountBannedTrueAndRoleNot("ADMIN").size());
         return "dashboard";
     }
 
@@ -123,6 +128,18 @@ public class HomeController {
         model.addAttribute("projects", adminService.getAllProjects());
         model.addAttribute("clients", adminService.getAllClients());
         model.addAttribute("employees", adminService.getAllEmployees());
+        return "dashboard";
+    }
+
+    @GetMapping("/dashboard/admin/banned-users")
+    public String adminBannedUsers(HttpSession session, Model model) {
+        User user = (User) session.getAttribute("user");
+        if (user == null || !"ADMIN".equalsIgnoreCase(user.getRole())) {
+            return "redirect:/dashboard";
+        }
+        model.addAttribute("page", "banned-users");
+        model.addAttribute("bannedUsers", userRepository.findByAccountBannedTrueAndRoleNot("ADMIN"));
+        model.addAttribute("activeUsers", userRepository.findActiveNonAdmin());
         return "dashboard";
     }
 

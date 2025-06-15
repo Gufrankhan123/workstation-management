@@ -222,6 +222,14 @@
             <i class="fas fa-exclamation-circle me-2"></i>
             Invalid Username or Password.
         </div>
+        <div th:if="${#strings.isEmpty(errorMessage)} and ${param.banned}" class="alert alert-danger" role="alert">
+            <i class="fas fa-exclamation-circle me-2"></i>
+            Your account is banned due to suspicious activity. Please contact the administrator.
+        </div>
+        <div th:if="${errorMessage}" class="alert alert-danger" role="alert">
+            <i class="fas fa-exclamation-circle me-2"></i>
+            <span th:text="${errorMessage}"></span>
+        </div>
         <div th:if="${param.logout}" class="alert alert-success" role="alert">
             <i class="fas fa-check-circle me-2"></i>
             You have been logged out successfully.

@@ -28,6 +28,15 @@ public class User {
     @Column(name = "created_at")
     private java.time.LocalDateTime createdAt;
     
+    @Column(name = "otp_failed_attempts")
+    private Integer otpFailedAttempts = 0;
+
+    @Column(name = "account_banned")
+    private Boolean accountBanned = false;
+
+    @Column(name = "ban_time")
+    private java.time.LocalDateTime banTime;
+    
     @PrePersist
     protected void onCreate() {
         createdAt = java.time.LocalDateTime.now();
@@ -71,5 +80,29 @@ public class User {
 
     public void setCreatedAt(java.time.LocalDateTime createdAt) {
         this.createdAt = createdAt;
+    }
+
+    public int getOtpFailedAttempts() {
+        return otpFailedAttempts == null ? 0 : otpFailedAttempts;
+    }
+
+    public void setOtpFailedAttempts(Integer otpFailedAttempts) {
+        this.otpFailedAttempts = otpFailedAttempts;
+    }
+
+    public boolean isAccountBanned() {
+        return accountBanned != null && accountBanned;
+    }
+
+    public void setAccountBanned(Boolean accountBanned) {
+        this.accountBanned = accountBanned;
+    }
+
+    public java.time.LocalDateTime getBanTime() {
+        return banTime;
+    }
+
+    public void setBanTime(java.time.LocalDateTime banTime) {
+        this.banTime = banTime;
     }
 } 

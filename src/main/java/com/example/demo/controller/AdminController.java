@@ -26,6 +26,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.web.bind.annotation.ResponseBody;
 import java.time.LocalDate;
 import org.springframework.data.domain.PageImpl;
+import com.example.demo.repository.UserRepository;
 
 import java.util.List;
 
@@ -35,6 +36,9 @@ public class AdminController {
 
     @Autowired
     private AdminService adminService;
+
+    @Autowired
+    private UserRepository userRepository;
 
     @GetMapping("/employees")
     public String showEmployees(Model model,
@@ -297,5 +301,34 @@ public class AdminController {
         adminService.deleteProject(projectId);
         redirectAttributes.addFlashAttribute("successMessage", "Project deleted successfully!");
         return "redirect:/dashboard/admin/project";
+    }
+
+    @PostMapping("/unban-user")
+    public String unbanUser(@RequestParam Long userId, RedirectAttributes redirectAttributes) {
+        com.example.demo.model.User user = userRepository.findById(userId).orElse(null);
+        if (user != null) {
+            user.setAccountBanned(false);
+            user.setOtpFailedAttempts(0);
+            userRepository.save(user);
+            redirectAttributes.addFlashAttribute("successMessage", "User unbanned successfully!");
+        } else {
+            redirectAttributes.addFlashAttribute("error", "User not found");
+        }
+        return "redirect:/dashboard/admin/banned-users";
+    }
+
+    @PostMapping("/ban-user")
+    public String banUser(@RequestParam Long userId, RedirectAttributes redirectAttributes) {
+        com.example.demo.model.User user = userRepository.findById(userId).orElse(null);
+        if (user != null) {
+            user.setAccountBanned(true);
+            user.setBanTime(java.time.LocalDateTime.now());
+            user.setOtpFailedAttempts(5);
+            userRepository.save(user);
+            redirectAttributes.addFlashAttribute("successMessage", "User banned successfully!");
+        } else {
+            redirectAttributes.addFlashAttribute("error", "User not found");
+        }
+        return "redirect:/dashboard/admin/banned-users";
     }
 } 

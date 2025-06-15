@@ -73,7 +73,7 @@
                             </div>
                             <div class="mb-3">
                                 <label class="form-label">Email (username)</label>
-                                <input type="email" name="email" class="form-control" required autocomplete="off">
+                                <input type="email" name="email" class="form-control" required autocomplete="off" pattern="^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$" title="Enter valid e-mail address">
                             </div>
                             <div class="mb-3">
                                 <label class="form-label">Relationship Date</label>
@@ -82,7 +82,7 @@
                             <div class="mb-3">
                                 <label class="form-label">Password</label>
                                 <div class="position-relative">
-                                    <input type="password" name="password" class="form-control" id="clientPassword" required autocomplete="new-password">
+                                    <input type="password" name="password" class="form-control" id="clientPassword" required autocomplete="new-password" pattern="(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[^A-Za-z0-9]).{8,}" title="Min 8 chars, upper, lower, number & symbol">
                                     
                                 </div>
                             </div>
@@ -106,12 +106,12 @@
                             <div class="modal-header"><h5 class="modal-title">Edit Client</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
                             <div class="modal-body">
                                 <div class="mb-3"><label class="form-label">Company Name</label><input type="text" name="companyName" class="form-control" th:value="${client.companyName}" required autocomplete="off"></div>
-                                <div class="mb-3"><label class="form-label">Email</label><input type="email" name="email" class="form-control" th:value="${client.user.username}" required autocomplete="off"></div>
+                                <div class="mb-3"><label class="form-label">Email</label><input type="email" name="email" class="form-control" th:value="${client.user.username}" required autocomplete="off" pattern="^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$" title="Enter valid e-mail address"></div>
                                 <div class="mb-3"><label class="form-label">Relationship Date</label><input type="date" name="relationshipDate" class="form-control" th:value="${client.relationshipDate}" required autocomplete="off"></div>
                                 <div class="mb-3">
                                     <label class="form-label">Reset Password</label>
                                     <div class="position-relative">
-                                        <input type="password" name="password" class="form-control" id="editClientPassword" placeholder="Leave blank to keep unchanged" autocomplete="new-password">
+                                        <input type="password" name="password" class="form-control" id="editClientPassword" placeholder="Leave blank to keep unchanged" autocomplete="new-password" pattern="(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[^A-Za-z0-9]).{8,}" title="Min 8 chars, upper, lower, number & symbol">
                                        
                                     </div>
                                 </div>
