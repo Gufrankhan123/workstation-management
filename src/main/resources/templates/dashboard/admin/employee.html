@@ -37,7 +37,7 @@
                 <tr th:each="employee : ${employees}">
                     <td th:text="${employee.empId}"></td>
                     <td th:text="${employee.name}"></td>
-                    <td th:text="${employee.email}"></td>
+                    <td th:text="${employee.user.username}"></td>
                     <td th:text="${#temporals.format(employee.joiningDate, 'yyyy-MM-dd')}"></td>
                 </tr>
                 <tr th:if="${employees == null or #lists.isEmpty(employees)}">
