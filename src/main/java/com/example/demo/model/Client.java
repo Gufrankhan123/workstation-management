@@ -2,6 +2,8 @@ package com.example.demo.model;
 
 import jakarta.persistence.*;
 import java.time.LocalDate;
+import java.util.Set;
+import com.example.demo.model.Project;
 
 @Entity
 @Table(name = "client")
@@ -24,6 +26,9 @@ public class Client {
     @Column(name = "relationship_date", nullable = false)
     private LocalDate relationshipDate;
 
+    @ManyToMany(mappedBy = "clients")
+    private Set<Project> projects = new java.util.HashSet<>();
+
     public Client() {}
 
     public Client(String clientId, String companyName, LocalDate relationshipDate, User user) {
@@ -44,4 +49,6 @@ public class Client {
     public void setUser(User user) { this.user = user; }
     public LocalDate getRelationshipDate() { return relationshipDate; }
     public void setRelationshipDate(LocalDate relationshipDate) { this.relationshipDate = relationshipDate; }
+    public Set<Project> getProjects() { return projects; }
+    public void setProjects(Set<Project> projects) { this.projects = projects; }
 } 

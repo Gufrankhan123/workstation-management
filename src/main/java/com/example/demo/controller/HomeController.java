@@ -81,6 +81,10 @@ public class HomeController {
             return "redirect:/dashboard";
         }
         model.addAttribute("page", "overview");
+        model.addAttribute("employeeCount", adminService.getAllEmployees().size());
+        model.addAttribute("clientCount", adminService.getAllClients().size());
+        model.addAttribute("projectCount", adminService.getAllProjects().size());
+        model.addAttribute("benchCount", adminService.getBenchEmployees().size());
         return "dashboard";
     }
 
@@ -92,6 +96,7 @@ public class HomeController {
         }
         model.addAttribute("page", "employee");
         model.addAttribute("employees", adminService.getAllEmployees());
+        model.addAttribute("projects", adminService.getAllProjects());
         return "dashboard";
     }
 
@@ -103,6 +108,8 @@ public class HomeController {
         }
         model.addAttribute("page", "client");
         model.addAttribute("clients", adminService.getAllClients());
+        model.addAttribute("projects", adminService.getAllProjects());
+        model.addAttribute("employees", adminService.getAllEmployees());
         return "dashboard";
     }
 

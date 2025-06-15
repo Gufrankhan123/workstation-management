@@ -1,11 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
-<head>
-    <meta charset="UTF-8">
-    <title>Employee Management</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-</head>
-<body>
+<!-- fragment file: employee.html -->
 <div th:fragment="content" data-page="employee">
     <div class="container mt-4">
         <h2>Employee Management</h2>
@@ -22,6 +16,32 @@
             <i class="fas fa-user-plus"></i> Add Employee
         </button>
 
+        <!-- Filter Form -->
+        <form class="d-flex flex-wrap gap-3 align-items-end mb-2" method="get" th:action="@{/admin/employees}">
+            <div class="d-flex flex-column">
+                <label class="form-label mb-1" for="filterEmail">Email</label>
+                <input id="filterEmail" type="text" name="email" class="form-control" placeholder="Email" th:value="${filterEmail}">
+            </div>
+            <div class="d-flex flex-column">
+                <label class="form-label mb-1" for="filterStart">Start date</label>
+                <input id="filterStart" type="date" name="start" class="form-control" th:value="${filterStart}">
+            </div>
+            <div class="d-flex flex-column">
+                <label class="form-label mb-1" for="filterEnd">End date</label>
+                <input id="filterEnd" type="date" name="end" class="form-control" th:value="${filterEnd}">
+            </div>
+            <div class="d-flex align-items-center">
+                <div class="form-check">
+                    <input type="checkbox" class="form-check-input" id="filterBench" name="bench" th:checked="${filterBench}">
+                    <label class="form-check-label" for="filterBench">Bench only</label>
+                </div>
+            </div>
+            <input type="hidden" name="size" th:value="${size}"/>
+            <div>
+                <button type="submit" class="btn btn-primary">Apply Filter</button>
+            </div>
+        </form>
+
         <!-- Employee Table -->
         <div class="table-responsive">
             <table class="table table-bordered table-hover">
@@ -29,22 +49,73 @@
                 <tr>
                     <th>Emp ID</th>
                     <th>Name</th>
+                    <th>Dept</th>
+                    <th>Phone</th>
                     <th>Email</th>
                     <th>Joining Date</th>
+                    <th>Project</th>
+                    <th>Actions</th>
                 </tr>
                 </thead>
                 <tbody>
                 <tr th:each="employee : ${employees}">
                     <td th:text="${employee.empId}"></td>
                     <td th:text="${employee.name}"></td>
+                    <td th:text="${employee.dept}"></td>
+                    <td th:text="${employee.phone}"></td>
                     <td th:text="${employee.user.username}"></td>
                     <td th:text="${#temporals.format(employee.joiningDate, 'yyyy-MM-dd')}"></td>
+                    <td>
+                        <span th:each="p,iter : ${employee.projects}" th:text="${p.name}" th:append="${iter.last ? '' : ', '}"></span>
+                    </td>
+                    <td>
+                      <div class="d-flex flex-wrap gap-2">
+                        <!-- Edit -->
+                        <button class="btn btn-outline-secondary btn-sm" data-bs-toggle="modal" th:data-bs-target="'#__editEmployeeModal_' + ${employee.empId}" title="Edit"><i class="fas fa-edit"></i></button>
+
+                        <!-- Delete -->
+                        <form th:action="@{/admin/delete-employee}" method="post" class="d-inline">
+                          <input type="hidden" name="empId" th:value="${employee.empId}"/>
+                          <button type="submit" class="btn btn-outline-danger btn-sm" title="Delete" onclick="return confirm('Delete employee?');"><i class="fas fa-trash-alt"></i></button>
+                        </form>
+
+                        <!-- Assign / Release -->
+                        <div th:if="${#lists.isEmpty(employee.projects)}">
+                          <button class="btn btn-outline-primary btn-sm" data-bs-toggle="modal" th:data-bs-target="'#__assignModal_' + ${employee.empId}" title="Assign to Project"><i class="fas fa-link"></i></button>
+                        </div>
+                        <div th:unless="${#lists.isEmpty(employee.projects)}">
+                          <form th:action="@{/admin/release-employee}" method="post" class="d-inline">
+                            <input type="hidden" name="empId" th:value="${employee.empId}"/>
+                            <button type="submit" class="btn btn-outline-warning btn-sm" title="Release from Project"><i class="fas fa-unlink"></i></button>
+                          </form>
+                        </div>
+                      </div>
+                    </td>
                 </tr>
                 <tr th:if="${employees == null or #lists.isEmpty(employees)}">
-                    <td colspan="4" class="text-center">No employees found.</td>
+                    <td colspan="8" class="text-center">No employees found.</td>
                 </tr>
                 </tbody>
             </table>
+        </div>
+
+        <!-- pagination under table bottom -->
+        <div th:if="${totalPages > 1}" class="mt-3">
+            <nav>
+                <ul class="pagination">
+                    <li th:classappend="${currentPage == 0} ? 'disabled'">
+                        <a class="page-link" th:href="@{/admin/employees(page=${currentPage-1},size=${size},email=${filterEmail},start=${filterStart},end=${filterEnd},bench=${filterBench})}">Prev</a>
+                    </li>
+                    <li th:each="i : ${#numbers.sequence(0, totalPages-1)}"
+                        th:classappend="${i==currentPage} ? 'active'">
+                        <a class="page-link" th:text="${i+1}"
+                           th:href="@{/admin/employees(page=${i},size=${size},email=${filterEmail},start=${filterStart},end=${filterEnd},bench=${filterBench})}"></a>
+                    </li>
+                    <li th:classappend="${currentPage +1 >= totalPages} ? 'disabled'">
+                        <a class="page-link" th:href="@{/admin/employees(page=${currentPage+1},size=${size},email=${filterEmail},start=${filterStart},end=${filterEnd},bench=${filterBench})}">Next</a>
+                    </li>
+                </ul>
+            </nav>
         </div>
 
         <!-- Add Employee Modal -->
@@ -58,20 +129,31 @@
                         </div>
                         <div class="modal-body">
                             <div class="mb-3">
-                                <label for="name" class="form-label">Name</label>
-                                <input type="text" name="name" class="form-control" id="name" required>
+                                <label class="form-label">Name</label>
+                                <input type="text" name="name" class="form-control" required autocomplete="off">
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Department</label>
+                                <input type="text" name="dept" class="form-control" required autocomplete="off">
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Phone</label>
+                                <input type="text" name="phone" class="form-control" required autocomplete="off">
                             </div>
                             <div class="mb-3">
                                 <label for="email" class="form-label">Email</label>
-                                <input type="email" name="email" class="form-control" id="email" required>
+                                <input type="email" name="email" class="form-control" id="email" required autocomplete="off">
                             </div>
                             <div class="mb-3">
                                 <label for="joiningDate" class="form-label">Joining Date</label>
-                                <input type="date" name="joiningDate" class="form-control" id="joiningDate" required>
+                                <input type="date" name="joiningDate" class="form-control" id="joiningDate" required autocomplete="off">
                             </div>
                             <div class="mb-3">
                                 <label for="password" class="form-label">Password</label>
-                                <input type="password" name="password" class="form-control" id="password" required>
+                                <div class="position-relative">
+                                    <input type="password" name="password" class="form-control" id="password" required autocomplete="new-password">
+                                   
+                                </div>
                             </div>
                             <div class="mb-3">
                                 <label for="role" class="form-label">Role</label>
@@ -87,9 +169,98 @@
                 </div>
             </div>
         </div>
+
+        <!-- Per-employee modals -->
+        <th:block th:each="employee : ${employees}">
+            <!-- Edit Employee Modal -->
+            <div class="modal fade" th:id="'__editEmployeeModal_' + ${employee.empId}" tabindex="-1">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <form th:action="@{/admin/update-employee}" method="post" autocomplete="off">
+                            <input type="hidden" name="empId" th:value="${employee.empId}"/>
+                            <div class="modal-header"><h5 class="modal-title">Edit Employee</h5>
+                              <button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
+                            <div class="modal-body">
+                              <div class="mb-3"><label class="form-label">Name</label><input type="text" autocomplete="off" class="form-control" name="name" th:value="${employee.name}" required></div>
+                              <div class="mb-3"><label class="form-label">Department</label><input type="text" autocomplete="off" class="form-control" name="dept" th:value="${employee.dept}" required></div>
+                              <div class="mb-3"><label class="form-label">Phone</label><input type="text" autocomplete="off" class="form-control" name="phone" th:value="${employee.phone}" required></div>
+                              <div class="mb-3"><label class="form-label">Email</label><input type="email" autocomplete="off" class="form-control" name="email" th:value="${employee.user.username}" required></div>
+                              <div class="mb-3"><label class="form-label">Joining Date</label><input type="date" autocomplete="off" class="form-control" name="joiningDate" th:value="${#temporals.format(employee.joiningDate, 'yyyy-MM-dd')}" required></div>
+                              <div class="mb-3">
+                                <label class="form-label">Reset Password</label>
+                                <div class="position-relative">
+                                    <input type="password" autocomplete="new-password" class="form-control" name="password" id="editPassword" placeholder="Leave blank to keep unchanged">
+                                    
+                                </div>
+                              </div>
+                            </div>
+                            <div class="modal-footer"><button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button><button type="submit" class="btn btn-primary">Save</button></div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Assign Modal -->
+            <div class="modal fade" th:id="'__assignModal_' + ${employee.empId}" tabindex="-1">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <form th:action="@{/admin/assign-employee}" method="post">
+                            <input type="hidden" name="empId" th:value="${employee.empId}"/>
+                            <div class="modal-header"><h5 class="modal-title">Assign to Project</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
+                            <div class="modal-body">
+                              <div class="mb-3"><label class="form-label">Project</label>
+                              <select name="projectId" class="form-select" required>
+                               <option th:each="p : ${projects}" th:value="${p.projectId}" th:text="${p.name}"></option>
+                              </select></div>
+                            </div>
+                            <div class="modal-footer"><button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button><button type="submit" class="btn btn-primary">Assign</button></div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </th:block>
     </div>
 </div>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/js/all.min.js"></script>
-</body>
-</html> 
+<style>
+  /* Password eye alignment */
+  .password-input{padding-right:2.75rem;}
+  .toggle-password{position:absolute; right:1rem; top:50%; transform:translateY(-50%); border:none; background:transparent; padding:0; color:#6c757d;}
+  .password-toggle {
+    position: absolute;
+    right: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    cursor: pointer;
+    color: #6c757d;
+    z-index: 10;
+  }
+
+  .password-toggle:hover {
+    color: #4a90e2;
+  }
+</style>
+<script>
+  // Initialize password visibility toggles once the DOM is ready
+  document.addEventListener('DOMContentLoaded', function(){
+    const togglePassword = function(btn){
+      const container = btn.closest('.position-relative');
+      if(!container) return;
+      const input = container.querySelector('.password-input');
+      if(!input) return;
+      const icon = btn.querySelector('i');
+      if(input.type === 'password'){
+        input.type = 'text';
+        icon.classList.replace('fa-eye-slash','fa-eye');
+      }else{
+        input.type = 'password';
+        icon.classList.replace('fa-eye','fa-eye-slash');
+      }
+    };
+
+    
+  });
+
+ 
+</script> 

@@ -4,6 +4,8 @@ import java.time.LocalDate;
 
 public class EmployeeDto {
     private String name;
+    private String dept;
+    private String phone;
     private String email;
     private LocalDate joiningDate;
     private String password;
@@ -22,4 +24,8 @@ public class EmployeeDto {
     public void setPassword(String password) { this.password = password; }
     public String getRole() { return role; }
     public void setRole(String role) { this.role = role; }
+    public String getDept() { return dept; }
+    public void setDept(String dept) { this.dept = dept; }
+    public String getPhone() { return phone; }
+    public void setPhone(String phone) { this.phone = phone; }
 } 

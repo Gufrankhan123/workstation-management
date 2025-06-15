@@ -19,10 +19,13 @@ CREATE TABLE IF NOT EXISTS employee (
     id INT AUTO_INCREMENT PRIMARY KEY,
     emp_id VARCHAR(50) NOT NULL UNIQUE,
     name VARCHAR(100) NOT NULL,
+    dept VARCHAR(100) NOT NULL,
+    phone VARCHAR(20) NOT NULL UNIQUE,
     user_id BIGINT NOT NULL UNIQUE,
     joining_date DATE NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     CONSTRAINT uk_emp_id UNIQUE (emp_id),
+    CONSTRAINT uk_emp_phone UNIQUE (phone),
     CONSTRAINT fk_employee_user FOREIGN KEY (user_id) REFERENCES users(id)
 );
 
