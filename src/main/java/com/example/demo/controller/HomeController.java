@@ -102,6 +102,7 @@ public class HomeController {
             return "redirect:/dashboard";
         }
         model.addAttribute("page", "client");
+        model.addAttribute("clients", adminService.getAllClients());
         return "dashboard";
     }
 
@@ -112,6 +113,9 @@ public class HomeController {
             return "redirect:/dashboard";
         }
         model.addAttribute("page", "project");
+        model.addAttribute("projects", adminService.getAllProjects());
+        model.addAttribute("clients", adminService.getAllClients());
+        model.addAttribute("employees", adminService.getAllEmployees());
         return "dashboard";
     }
 
